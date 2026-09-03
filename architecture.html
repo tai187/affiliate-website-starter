@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Architecture — Affiliate Website Starter (futuretoolsbase.com)</title>
+<style>
+  :root{
+    --bg:#f7f7f5;
+    --ink:#1f2328;
+    --sub:#5b6572;
+    --main:#dbe9ff;
+    --main-border:#3b6fd6;
+    --decision:#fff3c4;
+    --decision-border:#c99a10;
+    --approve:#e9defe;
+    --approve-border:#7c3aed;
+    --error:#ffdcdc;
+    --error-border:#c92a2a;
+    --safe:#d7f5e3;
+    --safe-border:#1e9e5a;
+    --end:#dbe9ff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    padding:32px 16px 80px;
+  }
+  h1{
+    text-align:center;
+    font-size:20px;
+    margin:0 0 4px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--sub);
+    font-size:13px;
+    margin-bottom:24px;
+  }
+  .legend{
+    max-width:820px;
+    margin:0 auto 32px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 20px;
+    justify-content:center;
+    font-size:12px;
+    color:var(--sub);
+  }
+  .legend span{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .swatch{
+    width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15);
+  }
+  .flow{
+    max-width:640px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .node{
+    width:100%;
+    border:2px solid var(--main-border);
+    background:var(--main);
+    border-radius:10px;
+    padding:14px 18px;
+    text-align:center;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .node b{display:block;font-size:13px;letter-spacing:.02em;margin-bottom:2px;}
+  .node small{display:block;color:var(--sub);font-size:12px;margin-top:4px;font-weight:400;}
+  .node.decision{background:var(--decision);border-color:var(--decision-border);}
+  .node.approve{background:var(--approve);border-color:var(--approve-border);}
+  .node.safe{background:var(--safe);border-color:var(--safe-border);}
+  .node.end{background:var(--end);border-color:var(--main-border);font-weight:600;}
+  .arrow{
+    font-size:20px;
+    color:var(--sub);
+    line-height:1;
+    margin:4px 0;
+  }
+  .branch-row{
+    width:100%;
+    display:flex;
+    gap:14px;
+    align-items:stretch;
+    margin:6px 0;
+  }
+  .branch{
+    flex:1;
+    border:2px dashed var(--error-border);
+    background:var(--error);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .branch.ok{
+    border-style:solid;
+    border-color:var(--safe-border);
+    background:var(--safe);
+  }
+  .branch .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    margin-bottom:6px;
+  }
+  .branch .tag.fail{background:var(--error-border);color:#fff;}
+  .branch .tag.pass{background:var(--safe-border);color:#fff;}
+  .loop{
+    font-size:12px;
+    color:var(--error-border);
+    font-weight:600;
+    margin-top:6px;
+  }
+  .section-label{
+    align-self:flex-start;
+    font-size:11px;
+    font-weight:700;
+    color:var(--sub);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:22px 0 8px;
+  }
+  .note{
+    max-width:640px;
+    margin:40px auto 0;
+    font-size:12px;
+    color:var(--sub);
+    border-top:1px solid #d9dce1;
+    padding-top:16px;
+  }
+  .note b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<h1>Architecture — Affiliate Website Starter</h1>
+<div class="subtitle">futuretoolsbase.com · WordPress + Elementor · HostArmada · Bản diagram đầu tiên (Phần D)</div>
+
+<div class="legend">
+  <span><span class="swatch" style="background:var(--main);border-color:var(--main-border)"></span>Bước chính</span>
+  <span><span class="swatch" style="background:var(--decision);border-color:var(--decision-border)"></span>Điều kiện / kiểm tra</span>
+  <span><span class="swatch" style="background:var(--approve);border-color:var(--approve-border)"></span>Nhung duyệt</span>
+  <span><span class="swatch" style="background:var(--safe);border-color:var(--safe-border)"></span>An toàn (backup/PASS)</span>
+  <span><span class="swatch" style="background:var(--error);border-color:var(--error-border)"></span>Nhánh lỗi / rollback</span>
+</div>
+
+<div class="flow">
+
+  <div class="node">
+    <b>A — Input</b>
+    Nhung cung cấp: ngách AI Tools, 4 nhóm ưu tiên (video generator, avatar tools, UGC/ad creator, text-to-video), domain, ngôn ngữ (tiếng Anh), mục tiêu website
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>B — Kiểm tra môi trường hiện tại</b>
+    WordPress + Elementor + HostArmada hiện có. <b>SEO plugin hiện tại: Rank Math</b> (đã cài sẵn).
+    <small>Agent kiểm tra cấu hình Rank Math hiện tại (sitemap, meta mặc định, schema...) và ưu tiên đánh giá có thể tiếp tục dùng Rank Math hay không, trước khi cân nhắc bất kỳ plugin SEO nào khác. Đồng thời rà soát theme, plugin cache, CDN — CHƯA cài/gỡ gì. Đồng thời kiểm tra staging trên HostArmada có dùng được không.</small>
+    <small><b>Không tự cài thêm Yoast hoặc SEO plugin khác.</b> Nếu Agent thấy cần thay Rank Math, phải nêu rõ lý do và chờ Nhung duyệt trước khi đề xuất được coi là hợp lệ.</small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node decision">
+    <b>Điều kiện B1</b>
+    Nhung duyệt đề xuất công cụ (giữ Rank Math hay đổi + lý do nếu đổi, giữ/thay theme, plugin cache, CDN)?
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">CHƯA ĐỒNG Ý</span>
+      Agent điều chỉnh đề xuất công cụ, trình lại Nhung
+      <div class="loop">↺ quay lại khối B</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">ĐỒNG Ý</span>
+      Ghi nhận công cụ sẽ dùng (kể cả giữ nguyên Rank Math) — chỉ triển khai thật ở giai đoạn Build (không cài/gỡ plugin trong Phần D)
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node decision">
+    <b>Điều kiện B2 — Staging trên HostArmada có dùng được không?</b>
+  </div>
+  <div class="branch-row">
+    <div class="branch ok">
+      <span class="tag pass">CÓ — dùng staging</span>
+      Toàn bộ thay đổi thực hiện trên staging (khối F). Không tự cấu hình HostArmada ngoài việc tạo/kiểm tra staging.
+    </div>
+    <div class="branch">
+      <span class="tag fail">KHÔNG — chưa dùng được</span>
+      Không tự cấu hình/đổi hosting → báo Nhung → đề xuất phương án preview/thử nghiệm an toàn khác → chờ Nhung duyệt phương án
+      <div class="loop">✓ Nhung duyệt phương án thay thế → dùng phương án đó thay cho "staging" trong toàn bộ luồng bên dưới</div>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="section-label">Research &amp; xác nhận phạm vi ngách/nhóm sản phẩm — dùng Affiliate Skills (02-affiliate-skills/)</div>
+
+  <div class="node">
+    <b>CP1 — Research &amp; Validate ngách / nhóm sản phẩm / Affiliate Program</b>
+    <i>AI Research Agent:</i> đọc <code>registry.json</code> → chọn đúng SKILL.md phù hợp trong nhóm Research → dùng Affiliate Skills như SOP để research → kiểm tra thêm nguồn chính thức / nguồn web đáng tin cậy → lưu nguồn/bằng chứng
+    <small>Affiliate Skill không phải nguồn sự thật duy nhất. Kết quả: danh sách sản phẩm/nhóm/chương trình Affiliate có bằng chứng đi kèm.</small>
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">CHƯA ĐỦ BẰNG CHỨNG</span>
+      Nguồn/dữ liệu chưa đủ tin cậy
+      <div class="loop">↺ quay lại CP1 để research thêm</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">ĐỦ BẰNG CHỨNG</span>
+      Trình Nhung duyệt phạm vi ngách/nhóm ưu tiên
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node approve">
+    <b>Điều kiện CP1b — Nhung duyệt phạm vi ngách/nhóm ưu tiên</b>
+    Chỉ sau khi được duyệt mới được đi tiếp tới thiết kế taxonomy và URL pattern
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">CHƯA ĐỒNG Ý</span>
+      Phạm vi ngách/nhóm ưu tiên chưa đạt
+      <div class="loop">↺ quay lại CP1</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">ĐỒNG Ý</span>
+      Phạm vi ngách/nhóm ưu tiên được chốt — đi tiếp tới taxonomy (C) và URL pattern (D)
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="section-label">Chuẩn bị nội dung &amp; cấu trúc (không đụng production)</div>
+
+  <div class="node">
+    <b>C — Thiết kế taxonomy nội dung</b>
+    Category lớn cho MVP: <b>AI Video</b>. 4 nhóm ưu tiên (video generator, avatar tools, UGC/ad creator, text-to-video) dùng làm <b>tag</b>, không phải category cứng — một công cụ có thể mang nhiều tag.
+    <small>Kiến trúc cho phép sau này thêm category lớn khác (AI Writing, AI Image, AI Productivity...) mà không đổi URL bài đã publish.</small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>D — Cố định URL pattern bài review</b>
+    <code>/reviews/ten-cong-cu/</code>
+    <small>URL không phụ thuộc category/tag — đổi taxonomy sau này không làm hỏng URL đã publish.</small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="section-label">Research &amp; viết từng bài — dùng Affiliate Skills (02-affiliate-skills/)</div>
+
+  <div class="node">
+    <b>CP2 — Content Research Brief</b>
+    Trước mỗi bài review/comparison/how-to: kiểm tra website chính thức, features, pricing, terms, affiliate information và các nguồn cần thiết → đánh dấu thông tin đã xác minh / chưa xác minh
+    <small>Chỉ khi Research Brief đạt QA mới được chuyển sang viết.</small>
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">FAIL</span>
+      Brief thiếu xác minh/nguồn
+      <div class="loop">↺ quay lại CP2 để bổ sung</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">PASS</span>
+      Brief đủ điều kiện chuyển sang viết
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>CP3 — Viết bài</b>
+    <i>AI Content Agent:</i> chọn Affiliate Skill phù hợp trong nhóm Content / Blog &amp; SEO → viết dựa trên Research Brief đã xác minh
+    <small>Không tự bịa features, giá, chính sách hoặc claim.</small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node decision">
+    <b>CP4 — QA bài viết</b>
+    <i>AI QA Agent</i> kiểm tra: nguồn, factual claims, SEO cơ bản, Affiliate Disclosure, compliance/risk, nội dung có thực sự giúp người đọc lựa chọn hay không
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">FAIL — thiếu nguồn/pricing/terms/claim</span>
+      Thiếu nguồn, feature, pricing, terms, hoặc factual claim chưa xác minh
+      <div class="loop">↺ quay lại CP2 (Content Research Brief) để bổ sung</div>
+    </div>
+    <div class="branch">
+      <span class="tag fail">FAIL — cách viết/cấu trúc</span>
+      Vấn đề nằm ở cách viết, cấu trúc, nội dung bài
+      <div class="loop">↺ quay lại CP3 (Viết bài) để sửa</div>
+    </div>
+    <div class="branch">
+      <span class="tag fail">FAIL — sai ngách/sản phẩm</span>
+      Vấn đề thực sự nằm ở ngách/sản phẩm/Affiliate Program đã chọn
+      <div class="loop">↺ quay lại CP1 (Research ngách/sản phẩm)</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">PASS</span>
+      Trình Nhung duyệt
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node approve">
+    <b>CP5 — Nhung duyệt bài viết</b>
+    AI không được tự publish/deploy bài viết khi chưa có sự đồng ý của Nhung
+    <small>Bài đã duyệt → trở thành nội dung cho 4 nhóm ưu tiên ở khối E bên dưới → tiếp tục theo luồng chính (staging → QA → duyệt production → deploy...)</small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>E — Chuẩn bị nội dung</b>
+    Nội dung review 4 nhóm ưu tiên (đã qua pipeline CP1–CP5 ở trên), cùng các trang nền tảng ở mức cơ bản: <b>Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use / Terms &amp; Conditions</b>.
+    <small>Không tuyên bố các trang này đảm bảo Affiliate Program duyệt hồ sơ, cũng không tuyên bố đảm bảo 100% tuân thủ pháp lý quốc tế. Toàn bộ nội dung phải được Nhung duyệt trước khi publish (cổng duyệt ở khối H).</small>
+    <small><i>Trang nâng cao (Editorial Policy, How We Review, Cookie Policy) — xem xét sau nếu cần, chưa mặc định đưa vào MVP.</i></small>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>F — Thực hiện thay đổi trên staging (hoặc phương án thay thế đã duyệt)</b>
+    Thiết lập sitemap, title/meta cơ bản, kết nối Search Console (nếu khả thi), kiểm tra hiển thị &amp; tốc độ desktop/mobile
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node decision">
+    <b>Điều kiện G — QA checklist trên staging</b>
+    Sitemap hoạt động? Meta cơ bản có? Đủ 6 trang tồn tại và mở được (Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use/Terms &amp; Conditions)? Không lỗi hiển thị/tốc độ nghiêm trọng?
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">FAIL</span>
+      Có mục chưa đạt
+      <div class="loop">↺ quay lại khối E/F để sửa trên staging</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">PASS</span>
+      Đủ điều kiện trình Nhung xem
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="section-label">Cổng duyệt bắt buộc trước khi đụng production</div>
+
+  <div class="node approve">
+    <b>H — Nhung xem staging (hoặc phương án thay thế) và duyệt</b>
+    Đây là bước duyệt <b>TRƯỚC khi deploy</b> — bắt buộc, không được bỏ qua
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">CHƯA ĐỒNG Ý</span>
+      Nhung yêu cầu chỉnh sửa
+      <div class="loop">↺ quay lại khối E/F để sửa trên staging</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">ĐỒNG Ý</span>
+      Cho phép tiến hành đưa lên production
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="section-label">Deploy an toàn</div>
+
+  <div class="node safe">
+    <b>I — Backup production</b>
+    Ưu tiên backup ở cấp hosting/cPanel/HostArmada, thực hiện <b>trước khi</b> đụng vào website đang chạy thật
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node">
+    <b>J — Deploy lên production</b>
+    Đưa bản đã được Nhung duyệt từ staging (hoặc phương án thay thế) lên <b>futuretoolsbase.com</b> trên HostArmada
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node decision">
+    <b>Điều kiện K — Kiểm tra SAU deploy trên production</b>
+    Trang mở được? Hiển thị đúng? Tốc độ ổn? Đủ 6 trang (Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use/Terms &amp; Conditions) hiển thị đúng trên site thật?
+  </div>
+  <div class="branch-row">
+    <div class="branch">
+      <span class="tag fail">LỖI NGHIÊM TRỌNG</span>
+      Site sập / hiển thị vỡ / mất nội dung → <b>không giữ site lỗi chạy thật</b>
+      <div class="loop">↺ Rollback về backup (khối I) → quay lại khối E/F trên staging</div>
+    </div>
+    <div class="branch ok">
+      <span class="tag pass">ỔN</span>
+      Website chạy thật đúng như bản đã duyệt
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="node end">
+    <b>L — Nhung xác nhận Done trên Linear</b>
+    Nhung tự kiểm tra website thật, comment xác nhận đạt "Done means" trên ticket Linear tương ứng
+    <small>Kết thúc luồng MVP. Mọi thay đổi/nhóm AI Tools mới sau MVP → tạo ticket riêng, ngoài phạm vi kiến trúc này.</small>
+  </div>
+
+</div>
+
+<div class="note">
+  <b>Ghi chú:</b> Đây là bản diagram HTML đầu tiên cho Phần D, dựa đúng theo spec.md và các quyết định kiến trúc đã được Nhung duyệt bằng chữ. Chưa build website, chưa deploy, chưa sửa WordPress/HostArmada/DNS, chưa tạo Linear ticket, chưa cài theme/plugin/CDN nào.
+</div>
+
+</body>
+</html>

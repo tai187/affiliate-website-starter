@@ -9,8 +9,8 @@ Khi bắt đầu đăng ký các chương trình Affiliate quốc tế, Nhung g�
 
 ## 3. What it does
 - Thu thập thông tin đầu vào từ Nhung (ngách AI Tools, nhóm ưu tiên ban đầu, thị trường mục tiêu, domain, ngôn ngữ, mục tiêu website).
-- Thiết kế cấu trúc website (category/taxonomy theo nhóm AI Tools, URL pattern ổn định) để hỗ trợ bổ sung thêm nhóm AI Tools mới sau MVP mà không cần thay đổi cấu trúc chính hoặc URL nội dung đã publish.
-- Hoàn thiện website trên nền WordPress + Elementor hiện có, gồm nội dung cơ bản cho 4 nhóm ưu tiên (AI video generator, AI avatar tools, AI UGC/ad creator, text-to-video), cùng trang Affiliate Disclosure và Privacy Policy ở mức cơ bản.
+- Research và xác nhận phạm vi ngách/nhóm sản phẩm/Affiliate Program bằng Affiliate Skills (`02-affiliate-skills/`) làm SOP kết hợp nguồn chính thức/đáng tin cậy, sau đó thiết kế cấu trúc website (category/taxonomy, URL pattern ổn định) để hỗ trợ bổ sung thêm nhóm AI Tools mới sau MVP mà không cần thay đổi cấu trúc chính hoặc URL nội dung đã publish.
+- Hoàn thiện website trên nền WordPress + Elementor hiện có: viết nội dung cho 4 nhóm ưu tiên (AI video generator, AI avatar tools, AI UGC/ad creator, text-to-video) theo quy trình Content Research Brief → viết → QA (nguồn, factual claims, compliance) bằng Affiliate Skills trước khi trình duyệt, cùng các trang cơ bản Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use/Terms & Conditions.
 - Thiết lập nền tảng SEO cơ bản (sitemap, title/meta cơ bản, kết nối Search Console nếu khả thi) và kiểm tra để đảm bảo không có lỗi hiển thị hoặc vấn đề tốc độ nghiêm trọng trên desktop/mobile.
 - Trình Nhung duyệt phiên bản trước khi deploy, triển khai lên domain futuretoolsbase.com sau khi được đồng ý, và đưa lại cho Nhung xác nhận kết quả chạy thật sau deploy.
 
@@ -26,9 +26,10 @@ Khi bắt đầu đăng ký các chương trình Affiliate quốc tế, Nhung g�
 
 ## 5. Data
 - **Input:** ngách tổng thể (AI Tools), nhóm ưu tiên ban đầu (AI video generator, AI avatar tools, AI UGC/ad creator, text-to-video), thị trường mục tiêu quốc tế, domain (futuretoolsbase.com — đã đăng ký), ngôn ngữ (tiếng Anh), mục tiêu website.
-- **Output:** website WordPress chạy thật trên futuretoolsbase.com, cấu trúc category/URL ổn định sẵn sàng mở rộng, trang Affiliate Disclosure + Privacy Policy cơ bản đã publish, nền tảng SEO cơ bản đã thiết lập.
-- **Nền tảng:** WordPress + Elementor hiện có; theme/plugin/CDN cụ thể chưa chốt trong spec này, sẽ quyết định ở bước Architecture.
+- **Output:** website WordPress chạy thật trên futuretoolsbase.com, cấu trúc category/URL ổn định sẵn sàng mở rộng, đủ 6 trang cơ bản đã publish (Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use/Terms & Conditions), nền tảng SEO cơ bản đã thiết lập.
+- **Nền tảng:** WordPress + Elementor hiện có; SEO plugin hiện tại là Rank Math (đang được đánh giá tiếp tục dùng hay thay ở bước Architecture); theme/plugin cache/CDN cụ thể khác chưa chốt trong spec này, sẽ quyết định ở bước Architecture.
 - **Hosting:** HostArmada.
+- **Công cụ hỗ trợ nội dung:** Affiliate Skills (`02-affiliate-skills/`, lưu local, không đưa lên GitHub) dùng làm SOP cho quy trình Research/Content/QA — không phải nguồn sự thật duy nhất, luôn kết hợp kiểm tra nguồn chính thức.
 - **Lưu ở đâu:**
   - Context, spec, kiến trúc → repo GitHub `affiliate-website-starter` (Private).
   - Website thật (nội dung, cấu hình) → WordPress trên hosting HostArmada, domain futuretoolsbase.com.
@@ -38,7 +39,7 @@ Khi bắt đầu đăng ký các chương trình Affiliate quốc tế, Nhung g�
 
 ## 6. Done means
 Coi là "xong" khi đồng thời thỏa:
-- Website MVP chạy thật bằng tiếng Anh trên futuretoolsbase.com, có nội dung cơ bản cho 4 nhóm AI Tools ưu tiên, có Affiliate Disclosure và Privacy Policy cơ bản đã publish.
+- Website MVP chạy thật bằng tiếng Anh trên futuretoolsbase.com, có nội dung cơ bản cho 4 nhóm AI Tools ưu tiên (đã qua Content Research Brief và QA), có đủ 6 trang cơ bản đã publish: Home, About, Contact, Affiliate Disclosure, Privacy Policy, Terms of Use/Terms & Conditions.
 - Cấu trúc category/taxonomy và URL ổn định, sẵn sàng bổ sung nhóm AI Tools mới sau này mà không cần đổi URL hoặc kiến trúc đã publish.
 - Đạt các mục tiêu kỹ thuật tối thiểu: sitemap hoạt động; title/meta cơ bản được thiết lập; Search Console được kết nối nếu khả thi; website không có lỗi hiển thị nghiêm trọng trên desktop/mobile; website không có vấn đề tốc độ nghiêm trọng.
 - Quy trình duyệt 2 bước được thực hiện đầy đủ: Nhung duyệt phiên bản trước khi deploy, và Nhung xác nhận kết quả chạy thật sau deploy bằng comment trên Linear ticket tương ứng.
