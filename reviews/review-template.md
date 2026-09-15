@@ -40,7 +40,7 @@
 khai của hãng và website khác, chưa tự tay dùng thử [tên tool]." — không gắn
 điểm rubric ở mục 4.
 
-## 4. Điểm rubric (CHỈ áp dụng nhóm AI Video Generator, CHỈ khi đã test thật)
+## 4. Điểm rubric (CHỈ áp dụng nhóm Text-to-Video / Social Video, CHỈ khi đã test thật)
 
 > Rubric thử nghiệm — đang trong giai đoạn áp dụng cho 3–5 bài đầu tiên,
 > chưa mở rộng sang 3 nhóm còn lại (Tính năng 4). Nếu tool thuộc nhóm khác

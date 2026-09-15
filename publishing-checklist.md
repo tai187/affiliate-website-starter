@@ -31,7 +31,7 @@ Dùng checklist này cho mọi bài review trước khi bấm publish trên Word
 - [ ] Nếu là sửa bài đã publish và là **sửa lớn** (giá đổi, kết luận đổi, sửa
       thông tin sai) → thêm 1 câu ghi chú ngắn công khai (Tính năng 7).
 
-## Chỉ áp dụng cho nhóm AI Video Generator (rubric thử nghiệm)
+## Chỉ áp dụng cho nhóm Text-to-Video / Social Video (rubric thử nghiệm — đổi nhóm ngày 15/09/2026, xem content-format-spec.md v3)
 
 - [ ] Chỉ chấm điểm rubric nếu bài đã gắn nhãn "Đã test thật" — không chấm
       điểm cho bài "chưa tự test" (Tính năng 3 + 4).

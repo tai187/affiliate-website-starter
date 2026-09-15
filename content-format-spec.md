@@ -1,4 +1,4 @@
-# SPEC.md — Content & Format System cho futuretoolsbase.com (bản nháp v2, chưa duyệt)
+# SPEC.md — Content & Format System cho futuretoolsbase.com (bản nháp v3, chưa duyệt)
 
 > Viết theo Bước 3 của skill `bto-teardown`: đặc tả sạch (clean-room) rút ra từ
 > việc phân rã 5 trang affiliate/review AI tool (llm-stats.com Video Arena,
@@ -16,8 +16,16 @@
 >
 > **v2 — bản sửa sau khi Nhung review bản v1**, thu hẹp phạm vi rubric chấm
 > điểm, đơn giản hóa nhật ký sửa bài, viết lại "Done means" theo hệ thống
-> nội dung thật thay vì chỉ theo bài kiểm spec bằng agent. Xem mục cuối cùng
-> "Các thay đổi trong bản sửa này" để biết chính xác đã đổi gì.
+> nội dung thật thay vì chỉ theo bài kiểm spec bằng agent.
+>
+> **v3 — Nhung xác nhận nhóm ưu tiên đầu tiên cho rubric thử nghiệm (Tính
+> năng 4) là Text-to-Video / Social Video, không phải AI video generator**
+> như giả định ban đầu ở v1/v2. Lý do: Nhung đã có sẵn link affiliate thật
+> (đã đăng ký, đã xác minh) cho Fliki.ai và Synthesys.io — cả hai đều thuộc
+> nhóm Text-to-Video — trong khi nhóm AI video generator chỉ có Runway xác
+> minh được affiliate công khai (Kling chỉ mời, Sora/Veo/Luma không có), và
+> bài pilot review Runway đã bị bỏ theo yêu cầu ngày 15/09/2026. Xem mục
+> cuối cùng "Các thay đổi trong bản sửa này" để biết chính xác đã đổi gì.
 
 ## 0. Vấn đề (Problem)
 
@@ -122,14 +130,14 @@ này — mỗi mục map tới đúng 1 tính năng bên dưới:
 > cho 4 nhóm ngay từ đầu, review yêu cầu thu hẹp lại chỉ còn 1 rubric.
 
 - **Người dùng nhận được gì:** một điểm số/xếp hạng có thể tra lại được cách
-  tính, nhưng **chỉ áp dụng cho đúng 1 nhóm ưu tiên đầu tiên** — theo thứ tự
-  liệt kê trong `spec.md` gốc, nhóm đó là **AI video generator**. *(Giả định
-  này cần Nhung xác nhận lại — nếu muốn thử nghiệm ở nhóm khác trước, chỉ cần
-  đổi tên nhóm ở đây, phần còn lại của tính năng không đổi.)*
+  tính, nhưng **chỉ áp dụng cho đúng 1 nhóm ưu tiên đầu tiên** — **Text-to-
+  Video / Social Video** (đã xác nhận bởi Nhung 15/09/2026, xem ghi chú v3 ở
+  đầu file — lý do: đây là nhóm duy nhất Nhung đã có sẵn ≥1 link affiliate
+  thật đã đăng ký, cụ thể Fliki.ai và Synthesys.io).
 - **Kích hoạt bằng gì:** bài review nằm trong đúng nhóm ưu tiên đầu tiên nói
-  trên. 3 nhóm còn lại (AI avatar, AI UGC/ad creator, text-to-video) **chưa
-  có rubric** — review ở 3 nhóm này dùng đánh giá định tính (pros/cons, "phù
-  hợp với ai") theo Tính năng 3 và Tính năng 9, không cho điểm số.
+  trên. 3 nhóm còn lại (AI video generator, AI avatar, AI UGC/ad creator)
+  **chưa có rubric** — review ở 3 nhóm này dùng đánh giá định tính (pros/cons,
+  "phù hợp với ai") theo Tính năng 3 và Tính năng 9, không cho điểm số.
 - **Vào / ra:** Vào — biên tập viên điền từng tiêu chí con theo đúng 1 rubric
   thử nghiệm này. Ra — điểm tổng + breakdown từng tiêu chí, có link tới trang
   giải thích cách tính rubric.
@@ -350,3 +358,8 @@ chí "xong" duy nhất. Danh sách checklist thật ở trên mới là thước
    bản v1, chỉ thêm tham chiếu chéo tới các tính năng mới ở Tính năng 6).
 8. Không đụng đến `spec.md` gốc, không tạo ticket, không build hay chỉnh sửa
    website — đúng theo yêu cầu review.
+9. **(v3)** Đổi nhóm ưu tiên đầu tiên cho rubric thử nghiệm (Tính năng 4) từ
+   AI video generator sang **Text-to-Video / Social Video**, theo xác nhận
+   của Nhung ngày 15/09/2026 — dựa trên link affiliate thật đã có sẵn
+   (Fliki.ai, Synthesys.io), không phải Runway (bài pilot Runway đã bỏ).
+   Không có tính năng nào khác bị đổi.
