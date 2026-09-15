@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Positioning Matrix — futuretoolsbase.com (v3)</title>
+<style>
+  :root{
+    --bg:#faf9f6; --ink:#1c1b18; --sub:#5b574d; --line:#d8d3c6;
+    --q-a:#f3efe4; --q-b:#eef5ee;
+    --target:#c8622d; --target-bg:#fdece1;
+    --chip:#ffffff; --chip-border:#cfc9b8;
+    --accent:#7a6a4f;
+    --hi:#2f6b3a; --med:#a6791f; --lo:#8a6b5a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#17160f; --ink:#f1ede2; --sub:#b9b3a0; --line:#3a382e;
+      --q-a:#211f17; --q-b:#182018;
+      --target:#e08a4f; --target-bg:#2c1c12;
+      --chip:#221f17; --chip-border:#413d2f;
+      --accent:#cbb98e;
+      --hi:#7fcf8d; --med:#e0b95c; --lo:#c9a08c;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:24px 16px 48px; background:var(--bg); color:var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:1060px; margin:0 auto;}
+  h1{font-size:1.4rem; margin:0 0 4px;}
+  .subtitle{color:var(--sub); font-size:.9rem; margin:0 0 6px;}
+  .revnote{
+    background:var(--target-bg); border:1px solid var(--target); border-radius:8px;
+    padding:10px 14px; font-size:.83rem; margin:14px 0 26px;
+  }
+  .revnote b{color:var(--target);}
+
+  .axes-explain{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:26px;
+  }
+  @media (max-width:640px){ .axes-explain{grid-template-columns:1fr;} }
+  .axes-explain div{
+    background:var(--chip); border:1px solid var(--chip-border); border-radius:10px;
+    padding:14px 16px; font-size:.86rem;
+  }
+  .axes-explain b{color:var(--accent);}
+
+  h2{font-size:1.05rem; margin:30px 0 10px;}
+  h3{font-size:.94rem; margin:18px 0 8px; color:var(--accent);}
+
+  .plot-outer{
+    display:grid; grid-template-columns:34px 1fr; grid-template-rows:1fr 30px;
+    gap:6px;
+  }
+  .y-axis-label{
+    grid-row:1; grid-column:1;
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:.78rem; color:var(--sub); font-weight:700;
+  }
+  .x-axis-label{
+    grid-row:2; grid-column:2;
+    display:flex; justify-content:space-between;
+    font-size:.78rem; color:var(--sub); font-weight:700; padding:0 2px;
+  }
+  .plot{
+    grid-row:1; grid-column:2;
+    position:relative; aspect-ratio: 1 / 0.82; min-height:440px;
+    background:
+      linear-gradient(to right, var(--q-a) 0 50%, var(--q-b) 50% 100%) top left / 100% 50% no-repeat,
+      linear-gradient(to right, var(--q-a) 0 50%, var(--q-b) 50% 100%) bottom left / 100% 50% no-repeat;
+    background-color: var(--q-a);
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;
+  }
+  .midline{position:absolute; background:var(--sub); opacity:.35;}
+  .midline.v{width:1.5px; top:0; bottom:0; left:50%;}
+  .midline.h{height:1.5px; left:0; right:0; bottom:50%;}
+  .quad-tag{
+    position:absolute; font-size:.68rem; font-weight:700; color:var(--sub);
+    text-transform:uppercase; letter-spacing:.02em; opacity:.65;
+  }
+  .qt-tl{top:8px; left:10px;} .qt-tr{top:8px; right:10px; text-align:right;}
+  .qt-bl{bottom:8px; left:10px;} .qt-br{bottom:8px; right:10px; text-align:right;}
+
+  .pt{
+    position:absolute; width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.7rem; font-weight:800; color:var(--bg);
+    transform:translate(-50%,50%); box-shadow:0 1px 3px rgba(0,0,0,.25);
+  }
+  .pt.conf-high{background:var(--hi); border:2px solid var(--hi);}
+  .pt.conf-medium{background:var(--med); border:2px solid var(--med);}
+  .pt.conf-low{background:transparent; border:2px dashed var(--lo); color:var(--lo);}
+  .pt.target{
+    width:40px; height:40px; border-radius:10px; transform:translate(-50%,50%) rotate(45deg);
+    background:var(--target-bg); border:2.5px dashed var(--target); color:var(--target);
+    font-size:0;
+  }
+  .pt.target::after{content:"★"; transform:rotate(-45deg); font-size:1.1rem;}
+
+  .legend-row{display:flex; gap:18px; flex-wrap:wrap; font-size:.78rem; color:var(--sub); margin:12px 0 8px;}
+  .legend-row span{display:inline-flex; align-items:center; gap:6px;}
+  .dotkey{width:14px; height:14px; border-radius:50%; display:inline-block;}
+  .dotkey.hi{background:var(--hi);}
+  .dotkey.med{background:var(--med);}
+  .dotkey.lo{background:transparent; border:2px dashed var(--lo);}
+  .dotkey.tgt{background:var(--target-bg); border:2px dashed var(--target); border-radius:4px;}
+  .plot-note{font-size:.74rem; color:var(--sub); margin:0 0 24px;}
+
+  table{width:100%; border-collapse:collapse; font-size:.81rem; background:var(--chip); border:1px solid var(--chip-border); border-radius:10px; overflow:hidden;}
+  thead th{
+    text-align:left; background:var(--q-a); color:var(--sub); font-size:.7rem;
+    text-transform:uppercase; letter-spacing:.02em; padding:9px 10px; border-bottom:1px solid var(--chip-border);
+  }
+  tbody td{padding:9px 10px; border-bottom:1px solid var(--chip-border); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num{font-weight:800; color:var(--accent); width:22px;}
+  td.score{font-weight:700; text-align:center; width:36px;}
+  .conf-badge{display:inline-block; padding:1px 7px; border-radius:999px; font-size:.66rem; font-weight:700; white-space:nowrap;}
+  .conf-badge.HIGH{background:var(--hi); color:var(--bg);}
+  .conf-badge.MEDIUM{background:var(--med); color:var(--bg);}
+  .conf-badge.LOW{background:transparent; border:1.5px dashed var(--lo); color:var(--lo);}
+  .target-row td{background:var(--target-bg);}
+  .target-row b{color:var(--target);}
+
+  .box{
+    background:var(--chip); border:1px solid var(--chip-border); border-radius:10px;
+    padding:16px 18px; font-size:.88rem; margin:14px 0 24px;
+  }
+  .box ul{margin:6px 0 0; padding-left:20px;}
+  .box li{margin-bottom:6px;}
+
+  .grid4{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0 24px;}
+  @media (max-width:720px){ .grid4{grid-template-columns:1fr 1fr;} }
+  @media (max-width:480px){ .grid4{grid-template-columns:1fr;} }
+  .stat-card{
+    background:var(--chip); border:1px solid var(--chip-border); border-radius:10px;
+    padding:12px 14px; font-size:.82rem;
+  }
+  .stat-card .k{font-size:.7rem; text-transform:uppercase; letter-spacing:.02em; color:var(--sub); font-weight:700; display:block; margin-bottom:4px;}
+  .stat-card b{color:var(--accent);}
+
+  .learn-list{display:grid; gap:10px; margin:14px 0 24px;}
+  .learn-item{
+    background:var(--chip); border:1px solid var(--chip-border); border-radius:10px;
+    padding:12px 14px; font-size:.85rem; display:grid; grid-template-columns:170px 1fr; gap:10px;
+  }
+  @media (max-width:640px){ .learn-item{grid-template-columns:1fr;} }
+  .learn-item .site{font-weight:700; color:var(--accent);}
+
+  .split2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0 24px;}
+  @media (max-width:720px){ .split2{grid-template-columns:1fr;} }
+  .split-box{border-radius:10px; padding:16px 18px; font-size:.86rem;}
+  .split-box.competitor{background:var(--q-a); border:1px solid var(--chip-border);}
+  .split-box.target{background:var(--target-bg); border:1.5px solid var(--target);}
+  .split-box h3{margin-top:0;}
+  .split-box ul{margin:6px 0 0; padding-left:20px;}
+  .split-box li{margin-bottom:7px;}
+
+  .conclusion{
+    background:var(--chip); border:1px solid var(--chip-border); border-radius:10px;
+    padding:16px 18px; font-size:.92rem;
+  }
+  .conclusion p{margin:0 0 10px;}
+  .conclusion p:last-child{margin-bottom:0;}
+  footer{margin-top:28px; font-size:.74rem; color:var(--sub);}
+  code{font-size:.85em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Market Positioning Matrix — futuretoolsbase.com <span style="color:var(--sub); font-weight:400; font-size:.85rem;">(v3 — teardown đầy đủ, mức độ bằng chứng khác nhau theo từng site)</span></h1>
+  <p class="subtitle">Buổi 3, Build to Own · Dựng bằng skill <code>bto-teardown</code> · 10 agent song song fetch trực tiếp từng site (WebFetch/WebSearch) · Chưa build, chưa tạo ticket, chưa đổi spec.md, chưa publish.</p>
+
+  <div class="revnote">
+    <b>Thay đổi ở v3:</b> Cả 10 site đã được đưa qua cùng quy trình teardown; mức độ bằng chứng trực tiếp khác nhau theo khả năng truy cập từng site. Futurepedia, TAAFT và Toolify.ai bị chặn một phần hoặc toàn phần khi fetch, nên các kết luận về những site này được gắn độ tin cậy thấp hơn. 3 phát hiện lớn: (1) theskillshift.com và Vidmetoo.com bị <b>bắt quả tang giá sai</b> khi đối chiếu trực tiếp với trang giá chính hãng; (2) llm-stats.com Video Arena đang <b>bị "sunset"</b> (ngừng cập nhật); (3) Futurepedia, TAAFT, Toolify.ai bị WebFetch chặn phần lớn (403) — dữ kiện của 3 site này yếu hơn, đánh dấu rõ độ tin cậy LOW/MEDIUM tương ứng.
+  </div>
+
+  <div class="axes-explain">
+    <div><b>Trục ngang — Minh bạch + Bằng chứng (1–5)</b>: xác minh giá chính thức, bằng chứng hands-on, ảnh chụp/output, minh bạch phương pháp, công bố affiliate, trách nhiệm tác giả/biên tập.</div>
+    <div><b>Trục dọc — Chuyên biệt theo use case (1–5)</b>: directory/listicle chung chung so với use case cụ thể, "best for X", đối tượng mục tiêu rõ, "phù hợp với ai/không", độ sâu so sánh trong ngách.</div>
+  </div>
+
+  <h2>Biểu đồ vị trí (điểm chuẩn hóa, bằng chứng trực tiếp)</h2>
+  <div class="plot-outer">
+    <div class="y-axis-label"><span>5 · Chuyên biệt</span><span>1 · Chung chung</span></div>
+    <div class="plot">
+      <div class="midline v"></div>
+      <div class="midline h"></div>
+      <span class="quad-tag qt-tl">Chuyên biệt · Thấp minh bạch</span>
+      <span class="quad-tag qt-tr">Chuyên biệt · Cao minh bạch (gap)</span>
+      <span class="quad-tag qt-bl">Chung chung · Thấp minh bạch (crowded — 7/10 site)</span>
+      <span class="quad-tag qt-br">Chung chung · Cao minh bạch</span>
+
+      <div class="pt target" style="left:96%; bottom:96%;" title="futuretoolsbase.com — TARGET"></div>
+
+      <div class="pt conf-medium" style="left:27%; bottom:34%;">1</div>
+      <div class="pt conf-medium" style="left:22%; bottom:25%;">2</div>
+      <div class="pt conf-medium" style="left:50%; bottom:73%;">3</div>
+      <div class="pt conf-medium" style="left:50%; bottom:27%;">4</div>
+      <div class="pt conf-medium" style="left:73%; bottom:73%;">5</div>
+      <div class="pt conf-low" style="left:20%; bottom:4%;">6</div>
+      <div class="pt conf-medium" style="left:32%; bottom:11%;">7</div>
+      <div class="pt conf-low" style="left:36%; bottom:4%;">8</div>
+      <div class="pt conf-medium" style="left:32%; bottom:27%;">9</div>
+      <div class="pt conf-medium" style="left:22%; bottom:36%;">10</div>
+    </div>
+    <div class="x-axis-label"><span>1 · Thấp</span><span>5 · Cao</span></div>
+  </div>
+  <div class="legend-row">
+    <span><span class="dotkey hi"></span> HIGH</span>
+    <span><span class="dotkey med"></span> MEDIUM</span>
+    <span><span class="dotkey lo"></span> LOW</span>
+    <span><span class="dotkey tgt"></span> ★ futuretoolsbase.com — TARGET POSITION — NOT YET ACHIEVED</span>
+  </div>
+  <p class="plot-note">Vị trí các điểm trong cụm đông (1,2,4,7,9,10 ở góc dưới-trái) có jitter nhẹ để tránh chồng chữ số — điểm số chính xác xem bảng bên dưới, không đọc tọa độ trên biểu đồ theo pixel.</p>
+
+  <h2>Bảng chuẩn hóa đầy đủ (10 site, điểm 1–5)</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Site</th><th>X</th><th>Y</th><th>Bằng chứng cốt lõi</th><th>Độ tin cậy</th></tr>
+    </thead>
+    <tbody>
+      <tr class="target-row">
+        <td class="num">★</td>
+        <td><b>futuretoolsbase.com — TARGET POSITION — NOT YET ACHIEVED</b></td>
+        <td class="score">5</td>
+        <td class="score">5</td>
+        <td>Vị trí mong muốn theo 9 tính năng trong <code>content-format-spec.md</code>. Chưa có bài review thật nào chạy qua checklist — <b>chưa đạt</b>.</td>
+        <td>N/A (mục tiêu)</td>
+      </tr>
+      <tr>
+        <td class="num">1</td><td>AIToolRanked.com</td>
+        <td class="score">2</td><td class="score">2</td>
+        <td>Bài Kling AI tự thú "không có benchmark xác minh nào" dù tiêu đề ghi "hands-on benchmarks"; disclosure có nhưng ẩn ở submenu; giá không có nguồn dẫn trên trang; 12 category generalist.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">2</td><td>theskillshift.com</td>
+        <td class="score">2</td><td class="score">2</td>
+        <td>Giá Jasper AI ghi "đã kiểm 7/9/2026" nhưng <b>sai lệch hoàn toàn</b> so với jasper.ai/pricing thật (đối chiếu trực tiếp); không tác giả cá nhân; directory ngang 240+ tool, nhiều ngành.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">3</td><td>Vidmetoo.com</td>
+        <td class="score">3</td><td class="score">4</td>
+        <td>Tác giả thật (Mario), mô tả trải nghiệm cụ thể (render 3p22s); giá HeyGen ghi $99 vs giá thật $49 (đối chiếu trực tiếp). <b>Chuyên biệt AI video xác nhận thật</b>, không còn là suy đoán tên miền.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">4</td><td>llm-stats.com Video Arena</td>
+        <td class="score">3</td><td class="score">2</td>
+        <td>Nhà sáng lập tên thật, tài liệu phương pháp có version — nhưng <b>Video Arena đang "sunset"</b> (ngừng cập nhật); không giá; cross-promotion không công bố với huggle.ai; là 1 mục nhỏ trong nền tảng đa-modal chung chung.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">5</td><td>Theoretically Media</td>
+        <td class="score">4</td><td class="score">4</td>
+        <td>Tác giả thật (Tim Simmons), disclosure affiliate rõ, và <b>bằng chứng hands-on mạnh nhất trong 10 site</b>: phim ngắn thật gắn tên tool cụ thể. Không có giá hiển thị.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">6</td><td>Futurepedia</td>
+        <td class="score">2</td><td class="score">1</td>
+        <td>WebFetch bị chặn 403 toàn bộ (7/7 lần) — mọi dữ kiện chỉ từ snippet gián tiếp/third-party, không tự kiểm chứng trực tiếp được.</td>
+        <td><span class="conf-badge LOW">LOW</span></td>
+      </tr>
+      <tr>
+        <td class="num">7</td><td>TAAFT</td>
+        <td class="score">2</td><td class="score">1</td>
+        <td>Trang chủ/about fetch được — xác nhận <b>xếp hạng trả phí (PPC bidding)</b> công khai cho vendor nhưng không hiển thị cho người đọc; mọi trang tool/leaderboard bị chặn 403.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">8</td><td>Toolify.ai</td>
+        <td class="score">2</td><td class="score">1</td>
+        <td>Chỉ trang chủ fetch được — xác nhận nội dung "cập nhật hàng ngày <b>bởi ChatGPT</b>", xếp hạng theo traffic/revenue; các trang sâu đều bị chặn 403.</td>
+        <td><span class="conf-badge LOW">LOW</span></td>
+      </tr>
+      <tr>
+        <td class="num">9</td><td>Zapier (bài AI video generator)</td>
+        <td class="score">2</td><td class="score">2</td>
+        <td>Có 1 giai thoại trải nghiệm khá cụ thể (Synthesia); nhưng không tên tác giả, không disclosure tìm được, không ảnh/output.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td class="num">10</td><td>G2 / Capterra</td>
+        <td class="score">2</td><td class="score">2</td>
+        <td>Tài liệu xác minh review rất chi tiết, xác nhận trực tiếp (30+ moderator, loại 29,9% review giả/vi phạm) — nhưng là review người dùng, <b>không phải hands-on biên tập</b>; Capterra công khai đấu giá PPC.</td>
+        <td><span class="conf-badge MEDIUM">MEDIUM</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Cụm bão hòa &amp; khoảng trống thật</h2>
+  <div class="box">
+    <b>Cụm bão hòa (crowded):</b> 7/10 site tụ ở đúng vùng X≈2, Y≈1–2 — AIToolRanked, theskillshift.com, Futurepedia, TAAFT, Toolify.ai, Zapier, G2/Capterra. Nay có bằng chứng trực tiếp (fetch thật) thay vì suy đoán như bản v1.
+    <br><br>
+    <b>Khoảng trống thật (evidence-based gap):</b> không site nào đạt X≥4 <b>và</b> Y≥4 cùng lúc trong vai trò "bài review viết + giá xác minh + rubric công khai". Theoretically Media (4,4) đạt cả hai nhưng ở định dạng phim/video, không phải bài viết có giá; Vidmetoo (3,4) gần nhất về định dạng nhưng bị bắt quả tang giá sai. <b>Trong 10 site, 2 site được xác nhận có thông tin giá sai hoặc lỗi thời khi đối chiếu trực tiếp; với các site còn lại, nghiên cứu này chưa thu được đủ bằng chứng để xác nhận pricing luôn chính xác và còn hiệu lực tại thời điểm kiểm tra</b> — đây là điểm yếu phổ quát của toàn thị trường, không phải của riêng site nào.
+  </div>
+
+  <h2>Mạnh nhất từng hạng mục</h2>
+  <div class="grid4">
+    <div class="stat-card"><span class="k">Hands-on evidence</span><b>Theoretically Media</b> — phim ngắn thật gắn tên tool cụ thể.</div>
+    <div class="stat-card"><span class="k">Disclosure</span><b>theskillshift.com</b> — câu disclosure rõ nhất, dù chưa gắn theo từng link.</div>
+    <div class="stat-card"><span class="k">Pricing accuracy</span><b>Chưa xác nhận được site nào đạt</b> — 2/10 xác nhận giá sai/lỗi thời; 8/10 còn lại chưa đủ bằng chứng để khẳng định luôn chính xác.</div>
+    <div class="stat-card"><span class="k">Methodology</span><b>G2/Capterra</b> — tài liệu xác minh review chi tiết nhất (số liệu cụ thể), nhưng là cho review người dùng, không phải test tay.</div>
+    <div class="stat-card"><span class="k">Use-case specialization</span><b>Vidmetoo.com &amp; Theoretically Media</b> — đồng hạng Y=4.</div>
+    <div class="stat-card"><span class="k">Trust</span><b>Theoretically Media</b> (uy tín biên tập) / <b>G2/Capterra</b> (uy tín quy trình) — mỗi bên có điểm yếu riêng.</div>
+  </div>
+
+  <h2>futuretoolsbase.com nên học gì từ từng site</h2>
+  <div class="learn-list">
+    <div class="learn-item"><span class="site">AIToolRanked.com</span><span>Không bao giờ đặt tiêu đề "hands-on"/"benchmarks" nếu không có dữ liệu thật đi kèm — đây chính là bẫy đã sập với Kling AI review.</span></div>
+    <div class="learn-item"><span class="site">theskillshift.com</span><span>"Ngày đã kiểm" chỉ có giá trị nếu thật sự có người kiểm lại — một ngày tự động không đối chiếu còn tệ hơn không ghi ngày, vì tạo cảm giác tin cậy giả.</span></div>
+    <div class="learn-item"><span class="site">Vidmetoo.com</span><span>Mô tả trải nghiệm cụ thể (số phút, bước thao tác) rẻ mà hiệu quả cho độ tin cậy — nhưng phải đi kèm quy trình kiểm giá thật, không chỉ lời hứa "cập nhật thường xuyên".</span></div>
+    <div class="learn-item"><span class="site">llm-stats.com Video Arena</span><span>Công bố rõ khi một tính năng bị ngừng/lưu trữ (họ làm điều này trung thực) thay vì để nó im lặng lỗi thời; đồng thời công bố rõ quan hệ cross-promotion nếu có.</span></div>
+    <div class="learn-item"><span class="site">Theoretically Media</span><span>Bằng chứng hands-on mạnh nhất không phải là ảnh chụp lẻ tẻ mà là một sản phẩm thật (dù nhỏ) gắn rõ tên tool đã dùng để tạo ra nó — futuretoolsbase.com có thể làm bản thu nhỏ của việc này (1 output ngắn/tool).</span></div>
+    <div class="learn-item"><span class="site">Futurepedia</span><span>Có trang disclosure/editorial-guidelines là baseline đáng làm — nhưng quy mô lớn không đi kèm bằng chứng hands-on hay tác giả cá nhân nào kiểm chứng được.</span></div>
+    <div class="learn-item"><span class="site">TAAFT</span><span>Đừng để cơ chế xếp hạng trả phí nằm ở trang chỉ vendor thấy — nếu có yếu tố tài trợ/trả phí ảnh hưởng thứ hạng, phải công bố ngay trên trang người đọc thấy.</span></div>
+    <div class="learn-item"><span class="site">Toolify.ai</span><span>Nội dung do AI cập nhật hàng loạt ("bởi ChatGPT") không thay được biên tập thật — đây chính là khoảng trống một site nhỏ, thật, có thể thắng.</span></div>
+    <div class="learn-item"><span class="site">Zapier</span><span>Thương hiệu lớn vẫn có thể thiếu tên tác giả và disclosure — một site nhỏ nhưng có cả hai thứ này đã hơn Zapier ở đúng 2 điểm.</span></div>
+    <div class="learn-item"><span class="site">G2/Capterra</span><span>Công bố cụ thể quy trình xác minh (số kiểm duyệt viên, tỷ lệ loại bỏ review giả) xây uy tín rất tốt — futuretoolsbase.com nên làm tương tự cho quy trình test tay của chính mình, không chỉ nói chung chung "chúng tôi test kỹ".</span></div>
+  </div>
+
+  <h2>Tách rõ: bằng chứng đối thủ vs hành vi mục tiêu</h2>
+  <div class="split2">
+    <div class="split-box competitor">
+      <h3>Bằng chứng đối thủ hiện tại (đã xác minh)</h3>
+      <ul>
+        <li>2/10 site bị bắt quả tang giá sai/lỗi thời khi đối chiếu trực tiếp (theskillshift, Vidmetoo).</li>
+        <li>1/10 site tự thú trong chính bài viết là không có dữ liệu test thật dù tiêu đề nói có (AIToolRanked).</li>
+        <li>3/10 site có cơ chế xếp hạng liên quan đến trả phí, công bố ở mức khác nhau (TAAFT — chỉ vendor thấy; Toolify.ai — sponsor badge công khai; G2/Capterra — công khai rõ business model).</li>
+        <li>1/10 site có tính năng cốt lõi đang bị ngừng/lưu trữ mà không marketing lại là "đã archive" một cách nổi bật (llm-stats Video Arena — dù họ có ghi rõ khi hỏi trực tiếp).</li>
+        <li>Không site nào trong 10 site có đồng thời: tác giả thật + disclosure rõ theo từng link + giá xác minh còn hiệu lực + rubric công khai cho việc test tay.</li>
+      </ul>
+    </div>
+    <div class="split-box target">
+      <h3>Hành vi mục tiêu futuretoolsbase.com (chưa đạt)</h3>
+      <ul>
+        <li>Giá có nguồn chính hãng + ngày kiểm <b>thật</b>, có cờ cảnh báo khi quá hạn — không phải nhãn "đã kiểm" không đi kèm việc kiểm thật (Tính năng 2, content-format-spec.md).</li>
+        <li>Nhãn "đã test thật" chỉ xuất hiện khi có ảnh/output cụ thể đính kèm — chặn publish nếu không có (Tính năng 3).</li>
+        <li>Affiliate disclosure đặt ngay đầu bài, gắn theo bài có link thật, không phải một trang chính sách chung ở footer (Tính năng 1).</li>
+        <li>Tên tác giả thật hiển thị nhất quán trên mọi bài có điểm số/khuyến nghị (Tính năng 8).</li>
+        <li>1 rubric thử nghiệm công khai, áp dụng nhất quán cho đúng 1 nhóm ưu tiên trước khi mở rộng (Tính năng 4).</li>
+        <li>"Phù hợp với ai / không phù hợp với ai" bắt buộc cả hai chiều, không chỉ khen (Tính năng 9).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Kết luận</h2>
+  <div class="conclusion">
+    <p>Sau khi teardown bằng bằng chứng trực tiếp, cụm bão hòa (7/10 site ở X≈2, Y≈1–2) được xác nhận rõ hơn bản v1, không còn dựa trên suy đoán.</p>
+    <p>Khoảng trống thị trường vẫn ở góc trên-phải, nhưng giờ có một phát hiện quan trọng hơn: <b>không phải chỉ thiếu người chiếm góc đó — mà đúng một tiêu chí (giá chính xác, còn hiệu lực) chỉ được xác nhận sai ở 2/10 site, và chưa có đủ bằng chứng để khẳng định các site còn lại luôn đạt được</b>. Đây là điểm yếu có thể kiểm chứng cụ thể nhất của toàn thị trường, không phải một giả định.</p>
+    <p>futuretoolsbase.com nhắm đúng góc này vì đó là điểm khác biệt duy nhất giúp thoát khỏi việc trở thành "thêm một bản sao của bản sao", và vì bằng chứng cho thấy ngay cả các site có vẻ uy tín nhất (G2/Capterra về quy trình, Theoretically Media về bằng chứng) cũng đều thiếu ít nhất một trụ cột — không có đối thủ nào thật sự "đã chiếm" vị trí mục tiêu.</p>
+    <p>Để thật sự đạt vị trí này, site phải chạy được — không chỉ viết trên giấy — đúng 9 tính năng trong <code>content-format-spec.md</code> (v2) trên ít nhất 3 bài review thật, và đặc biệt phải tránh đúng lỗi giá-sai đã bắt được ở 2 đối thủ (theskillshift.com, Vidmetoo.com): ghi "đã kiểm" mà không thật sự kiểm là tệ hơn không ghi gì.</p>
+  </div>
+
+  <footer>Nguồn: 10 subagent teardown song song (bto-teardown skill), mỗi site fetch trực tiếp qua WebFetch/WebSearch, đánh dấu [CONFIRMED]/[UNVERIFIED]/[VENDOR-CLAIMED] theo từng claim (chi tiết đầy đủ nằm trong log hội thoại, không lặp lại toàn bộ ở đây để giữ file gọn). Futurepedia, TAAFT, Toolify.ai bị WebFetch chặn một phần/toàn phần (403) — đánh dấu độ tin cậy LOW/MEDIUM tương ứng. Chưa build, chưa tạo ticket, chưa đổi spec.md gốc, chưa publish — cần Nhung duyệt trước khi dùng cho submission Buổi 3.</footer>
+
+</div>
+</body>
+</html>
